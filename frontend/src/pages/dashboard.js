@@ -17,7 +17,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const getUsers = async () => {
-            const response = await fetch('https://read-online-library.onrender.com/api/user/users')
+            const response = await fetch('/api/user/users')
             const json = await response.json()
     
             setAllUsers(json)
@@ -30,7 +30,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const getPdf = async () => {
-            const response = await fetch('https://read-online-library.onrender.com/api/file')
+            const response = await fetch('/api/file')
             const json = await response.json()
             setAllPdf(json)
             setStatePdf('')
@@ -55,7 +55,7 @@ const Dashboard = () => {
             const image2 = ''
             const message = 'Your Account has been approved. Thank you for your patience' 
 
-            const response = await fetch(`https://read-online-library.onrender.com/api/user/${upIdCh}`,{
+            const response = await fetch(`/api/user/${upIdCh}`,{
                 method: 'PATCH',
                 body: JSON.stringify({approved, image, image2}),
                 headers: {'Content-Type': 'application/json'}
@@ -71,7 +71,7 @@ const Dashboard = () => {
                 console.log('error')
             }
 
-            const sendEmail = await fetch('https://read-online-library.onrender.com/api/user/sendEmail', {
+            const sendEmail = await fetch('/api/user/sendEmail', {
                 method: 'POST',
                 body: JSON.stringify({email, message}),
                 headers: {'Content-Type': 'application/json'} 
@@ -91,7 +91,7 @@ const Dashboard = () => {
     useEffect(() => {
         
         const deleteSignUpReq = async () => {
-            const response = await fetch(`https://read-online-library.onrender.com/api/user/${delIdCh}`, {
+            const response = await fetch(`/api/user/${delIdCh}`, {
                 method: 'DELETE'
             })
     
@@ -116,7 +116,7 @@ const Dashboard = () => {
         
         const approved = true
         const ApprovePdf = async () => {
-            const response = await fetch(`https://read-online-library.onrender.com/api/file/${upPdfCh}`,{
+            const response = await fetch(`/api/file/${upPdfCh}`,{
                 method: 'PATCH',
                 body: JSON.stringify({approved}),
                 headers: {'Content-Type': 'application/json'}
@@ -142,7 +142,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const deletePdf = async () => {
-            const response = await fetch(`https://read-online-library.onrender.com/api/file/${delPdfCh}`, {
+            const response = await fetch(`/api/file/${delPdfCh}`, {
                 method: 'DELETE'
             })
             
@@ -176,17 +176,22 @@ const Dashboard = () => {
                 </div>}
                 {allUSers.length > 0 && allUSers.map(data => 
                 (data.approved === false && <div key={data._id}>
-                    <p>Email: {data.email}</p>
+                    <b>Email: {data.email}</b>
                     <div id="IDConfirm">
-                        <p>ID (Front): </p>
-                        <img src={data.image} width={100} alt=""/> 
-                        <p>ID (Back): </p>
-                        <img src={data.image2} width={100} alt=""/>
+                        <div id="p"> 
+                            <p>ID (Front): </p>
+                            <p>ID (Back): </p>
+                        </div>
+                        <div id="img">
+                            <img src={data.image} width={100} alt=""/> 
+                            <img src={data.image2} width={100} alt=""/>
+                        </div>
+                        {(delId !== data._id && upId !== data._id) && <div className="dashBMainButtons">
+                            <button className="appr" onClick={e => setUpId(e.target.value)} value={data._id}>Approve Request</button>
+                            <button className="del" onClick={e => setDelId(e.target.value)} value={data._id}>Reject Request</button>
+                        </div>}
                     </div>
-                    {(delId !== data._id && upId !== data._id) && <div className="dashBMainButtons">
-                        <button className="appr" onClick={e => setUpId(e.target.value)} value={data._id}>Approve Request</button>
-                        <button className="del" onClick={e => setDelId(e.target.value)} value={data._id}>Reject Request</button>
-                    </div>}
+                    
                     {upId === data._id && <p className="warning">Warning: Are you sure you want to APPROVE this Account?</p>}
                     <div className="dashBConButtons">
                         {upId === data._id && <button className="yes" onClick={e => setUpIdCh(e.target.value)} value={data._id}>Yes</button>}

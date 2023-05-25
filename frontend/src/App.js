@@ -14,8 +14,11 @@ import UploadPdf from "./pages/uploadPdf"
 
 function App() {
   const { user } = useAuthContext()
+
+  const padApp = {gridTemplateRows: '9% 91%' ,padding: '0'}
+  const padAppNone = {}
   return (
-    <div className="App">
+    <div className="App" style={!user ? padApp : padAppNone }>
       <BrowserRouter>
         <Nav/>
         <Routes>

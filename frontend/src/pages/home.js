@@ -1,6 +1,8 @@
 import React, {useState, useRef, useEffect} from "react"
 import escapeStringRegexp from 'escape-string-regexp';
 import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBook, faArrowLeftLong, faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
 //import {Document, Page} from 'react-pdf'
 
 const Home = () => {
@@ -28,7 +30,7 @@ const Home = () => {
 
     useEffect(() =>  {
         const getPdf = async () => {
-            const response = await fetch('https://read-online-library.onrender.com/api/file')
+            const response = await fetch('/api/file')
             const json = await response.json()
             setAllPdf(json)
         }
@@ -251,6 +253,7 @@ const Home = () => {
     const goBck = () => {
         setSearchData([])
         setSearch('')
+        setPage(0)
     }
 
     const showFDiv = () => {
@@ -282,13 +285,19 @@ const Home = () => {
     const showFDivDes = {display: 'block'}
     const unShowDivDes = {display: 'none'}
 
+    const prev = {visibility: 'hidden'}
+    const prevNone = {}
+    const next = {visibility: 'hidden'}
+    const nextNone = {}
+
     return(
         <div id="home">
             <div id="pdfLinks">
                 <div id="pagination">
-                    <button id="prev" onClick={() => {page > 0 && setPage(e => e - 1)}}>Prev</button>
-                    <span>{page}</span>
-                    <button id="next" onClick={() => { ((page < searchData.length - 1) || (page < pdfArr.length - 1 && searchData.length === 0)) && setPage(e => e + 1)}}>Next</button>
+                    <button id="prev" style={page === 0 ? prev : prevNone} onClick={() => {page > 0 && setPage(e => e - 1)}}><FontAwesomeIcon icon={faArrowLeftLong} /></button>
+                    <span>{page + 1}</span>
+                    <button id="next" style={(page === pdfArr.length - 1 || page === searchData.length - 1) ? next : nextNone} onClick={() => { ((page < searchData.length - 1) || (page < pdfArr.length - 1 && searchData.length === 0)) && setPage(e => e + 1)}}>
+                    <FontAwesomeIcon icon={faArrowRightLong} /></button>
                 </div>
                 {(pdfArr[0].length === 0 && searchData.length === 0)  && <div className="loading">
                     <div key={1}></div>
@@ -301,18 +310,29 @@ const Home = () => {
                     {(searchData.length === 0 && pdfArr[0].length > 0) && pdfArr[page].map(data =>
                     ( 
                     <div key={data._id}>
-                        <p><Link to={`/pdfView/${data._id}`}>{data.title}</Link></p>
-                        <p>Authors: {data.authors.split(',').length < 3 ? data.authors.replace(',', ' & ') : data.authors.split(',')[0] + ' et.al'}</p>
-                        <p>Section: {data.section}</p>
-                        <p>Year Published: {data.createdAt.split('-')[0]}</p>
+                        <Link to={`/pdfView/${data._id}`} className="fontIcon">
+                            <FontAwesomeIcon icon={faBook} size="2x"/>
+                        </Link>
+                        
+                        <Link to={`/pdfView/${data._id}`}>
+                            <p><Link to={`/pdfView/${data._id}`}>{data.title}</Link></p>
+                            <p>Authors: {data.authors.split(',').length < 3 ? data.authors.replace(',', ' & ') : data.authors.split(',')[0] + ' et.al'}</p>
+                            <p>Section: {data.section}</p>
+                            <p>Year Published: {data.createdAt.split('-')[0]}</p>
+                        </Link>
                     </div>))}
                     {searchData.length !== 0 ? searchData[page].map(data =>
                     (
                         <div key={data._id}>
-                            <p><Link to={`/pdfView/${data[6]}`} key={data[6]}>{data[0]}{data[1]}{data[2]}</Link></p>
-                            <p>Authors: {data[5].split(',').length < 3 ? data[5].replace(',', ' & ') : data[5].split(',')[0] + ' et.al'}</p>
-                            <p>Section: {data[3]}</p>
-                            <p>Year Published: {data[4].split('-')[0]}</p>
+                            <Link to={`/pdfView/${data[6]}`} className="fontIcon">
+                                <FontAwesomeIcon icon={faBook} size="2x"/>
+                            </Link>
+                            <Link to={`/pdfView/${data[6]}`}>
+                                <p><Link to={`/pdfView/${data[6]}`} key={data[6]}>{data[0]}{data[1]}{data[2]}</Link></p>
+                                <p>Authors: {data[5].split(',').length < 3 ? data[5].replace(',', ' & ') : data[5].split(',')[0] + ' et.al'}</p>
+                                <p>Section: {data[3]}</p>
+                                <p>Year Published: {data[4].split('-')[0]}</p>
+                            </Link>
                         </div>
                     ))
                     : ''}
