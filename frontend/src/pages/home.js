@@ -30,7 +30,7 @@ const Home = () => {
 
     useEffect(() =>  {
         const getPdf = async () => {
-            const response = await fetch('/api/file')
+            const response = await fetch('https://read-online-library.onrender.com/api/file')
             const json = await response.json()
             setAllPdf(json)
         }
