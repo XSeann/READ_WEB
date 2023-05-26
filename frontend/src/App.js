@@ -18,7 +18,7 @@ function App() {
   const padApp = {gridTemplateRows: '9% 91%' ,padding: '0'}
   const padAppNone = {}
   return (
-    <div className="App" style={!user ? padApp : padAppNone }>
+    <div className="App" style={!(user && user.is_admin) ? padApp : padAppNone }>
       <BrowserRouter>
         <Nav/>
         <Routes>
